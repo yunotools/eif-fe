@@ -59,7 +59,9 @@ export function AuthPanel() {
               className="eif-input"
               autoComplete="username"
               value={username}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setUsername(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setUsername(event.target.value)
+              }
               required
             />
           </Field>
@@ -69,7 +71,9 @@ export function AuthPanel() {
               type="password"
               autoComplete="current-password"
               value={password}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setPassword(event.target.value)
+              }
               required
             />
           </Field>
@@ -82,7 +86,9 @@ export function AuthPanel() {
             <input
               className="eif-input mt-2 uppercase"
               value={captchaValue}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setCaptchaValue(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setCaptchaValue(event.target.value)
+              }
               placeholder="Nhập captcha"
               autoCapitalize="characters"
               required
@@ -93,7 +99,9 @@ export function AuthPanel() {
             <input
               type="checkbox"
               checked={remember}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setRemember(event.target.checked)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setRemember(event.target.checked)
+              }
             />
             Ghi nhớ đăng nhập
           </label>
@@ -101,7 +109,11 @@ export function AuthPanel() {
           {captcha.error ? <ErrorNotice value={captcha.error} /> : null}
           {auth.error ? <ErrorNotice value={auth.error} /> : null}
 
-          <Button type="submit" busy={auth.loading} disabled={!captcha.data?.key}>
+          <Button
+            type="submit"
+            busy={auth.loading}
+            disabled={!captcha.data?.key}
+          >
             Đăng nhập
           </Button>
         </form>
@@ -110,16 +122,26 @@ export function AuthPanel() {
       <Card>
         <h2 className="text-xl font-bold">Dùng session có sẵn</h2>
         <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
-          Session ID do backend EIF tạo sau khi đăng nhập thành công. Ở một phiên EIF đang đăng nhập, mở khối “Phiên đăng nhập” và bấm “Sao chép Session ID”. Trên cùng trình duyệt bạn thường không cần nhập lại vì EIF tự khôi phục session đã lưu.
+          Session ID do backend EIF tạo sau khi đăng nhập thành công. Ở một
+          phiên EIF đang đăng nhập, mở khối “Phiên đăng nhập” và bấm “Sao chép
+          Session ID”. Trên cùng trình duyệt bạn thường không cần nhập lại vì
+          EIF tự khôi phục session đã lưu.
         </p>
-        <form className="mt-5 grid gap-4" onSubmit={(event: FormEvent<HTMLFormElement>) => void attachManual(event).catch(() => undefined)}>
+        <form
+          className="mt-5 grid gap-4"
+          onSubmit={(event: FormEvent<HTMLFormElement>) =>
+            void attachManual(event).catch(() => undefined)
+          }
+        >
           <Field label="Session ID">
             <input
               className="eif-input text-xs"
               type="password"
               autoComplete="off"
               value={manualSessionId}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setManualSessionId(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setManualSessionId(event.target.value)
+              }
               placeholder="Nhập session ID"
               required
             />
@@ -129,14 +151,20 @@ export function AuthPanel() {
             <input
               type="checkbox"
               checked={remember}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => setRemember(event.target.checked)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setRemember(event.target.checked)
+              }
             />
             Ghi nhớ đăng nhập
           </label>
 
           {attach.error ? <ErrorNotice value={attach.error} /> : null}
 
-          <Button type="submit" variant="secondary" busy={attach.loading || session.phase === "validating"}>
+          <Button
+            type="submit"
+            variant="secondary"
+            busy={attach.loading || session.phase === "validating"}
+          >
             Dùng session
           </Button>
         </form>

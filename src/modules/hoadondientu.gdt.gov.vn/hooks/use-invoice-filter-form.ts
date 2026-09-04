@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useReducer } from "react";
-import { currentMonthDateRange, formatDateForDisplay } from "@global/utils/date";
+import {
+  currentMonthDateRange,
+  formatDateForDisplay,
+} from "@global/utils/date";
 import {
   EMPTY_FILTER_FORM,
   type InvoiceFilterFormState,
@@ -20,7 +23,10 @@ function createInitialState(): InvoiceFilterFormState {
   };
 }
 
-function reducer(state: InvoiceFilterFormState, action: FilterAction): InvoiceFilterFormState {
+function reducer(
+  state: InvoiceFilterFormState,
+  action: FilterAction,
+): InvoiceFilterFormState {
   switch (action.type) {
     case "CHANGE":
       return { ...state, [action.field]: action.value };
@@ -36,9 +42,12 @@ function reducer(state: InvoiceFilterFormState, action: FilterAction): InvoiceFi
 export function useInvoiceFilterForm() {
   const [form, dispatch] = useReducer(reducer, undefined, createInitialState);
 
-  const change = useCallback((field: keyof InvoiceFilterFormState, value: string) => {
-    dispatch({ type: "CHANGE", field, value });
-  }, []);
+  const change = useCallback(
+    (field: keyof InvoiceFilterFormState, value: string) => {
+      dispatch({ type: "CHANGE", field, value });
+    },
+    [],
+  );
 
   const reset = useCallback(() => {
     const range = currentMonthDateRange();

@@ -21,7 +21,9 @@ export default function ErrorBoundary({
       <h1 className="mt-2 text-4xl font-black">Không thể tải trang</h1>
       <p className="mt-4 text-[var(--muted)]">Vui lòng thử lại.</p>
       <div className="mt-6">
-        <Button type="button" onClick={reset}>Thử lại</Button>
+        <Button type="button" onClick={reset}>
+          Thử lại
+        </Button>
       </div>
     </div>
   );

@@ -2,8 +2,16 @@ import { config } from "@global/config/config";
 
 const capabilities = [
   ["01", "Đăng nhập", "Tạo và quản lý EIF session dùng để làm việc với HĐĐT."],
-  ["02", "Tra cứu", "Lọc dữ liệu hóa đơn theo khoảng thời gian và các tiêu chí nghiệp vụ."],
-  ["03", "Xuất dữ liệu", "Xuất file theo từng phần hoặc gộp dữ liệu thành một file."],
+  [
+    "02",
+    "Tra cứu",
+    "Lọc dữ liệu hóa đơn theo khoảng thời gian và các tiêu chí nghiệp vụ.",
+  ],
+  [
+    "03",
+    "Xuất dữ liệu",
+    "Xuất file theo từng phần hoặc gộp dữ liệu thành một file.",
+  ],
 ] as const;
 
 export function AboutPage() {
@@ -19,7 +27,9 @@ export function AboutPage() {
             </span>
           </h1>
           <p className="max-w-xl text-sm leading-7 text-[var(--muted)] sm:text-base">
-            EIF là giao diện làm việc tối giản cho quy trình hóa đơn điện tử: xác thực phiên, tra cứu dữ liệu và xuất kết quả mà không phải thao tác lặp lại trên nhiều màn hình.
+            EIF là giao diện làm việc tối giản cho quy trình hóa đơn điện tử:
+            xác thực phiên, tra cứu dữ liệu và xuất kết quả mà không phải thao
+            tác lặp lại trên nhiều màn hình.
           </p>
         </div>
       </header>
@@ -36,7 +46,9 @@ export function AboutPage() {
           </div>
           <div className="grid grid-cols-[7rem_1fr] gap-5 py-5">
             <dt className="text-sm font-bold text-[var(--muted)]">Phiên bản</dt>
-            <dd className="font-bold text-[var(--accent)]">{config.app.version}</dd>
+            <dd className="font-bold text-[var(--accent)]">
+              {config.app.version}
+            </dd>
           </div>
         </dl>
       </section>
@@ -49,9 +61,13 @@ export function AboutPage() {
               key={number}
               className="grid gap-3 border-b border-[var(--border)] py-6 last:border-b-0 sm:grid-cols-[4rem_12rem_minmax(0,1fr)] sm:items-start"
             >
-              <span className="text-xs font-black text-[var(--accent)]">{number}</span>
+              <span className="text-xs font-black text-[var(--accent)]">
+                {number}
+              </span>
               <h3 className="font-bold">{title}</h3>
-              <p className="text-sm leading-6 text-[var(--muted)]">{description}</p>
+              <p className="text-sm leading-6 text-[var(--muted)]">
+                {description}
+              </p>
             </div>
           ))}
         </div>

@@ -35,7 +35,6 @@ function FilterRow({
   );
 }
 
-
 function DateInput({
   id,
   value,
@@ -60,7 +59,9 @@ function DateInput({
         maxLength={10}
         placeholder="DD/MM/YYYY"
         value={value}
-        onChange={(event) => onChange(normalizeDateDisplayInput(event.target.value))}
+        onChange={(event) =>
+          onChange(normalizeDateDisplayInput(event.target.value))
+        }
         required
       />
 
@@ -68,7 +69,13 @@ function DateInput({
         className="pointer-events-none absolute inset-y-0 right-0 flex w-11 items-center justify-center text-[var(--muted)]"
         aria-hidden="true"
       >
-        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <svg
+          viewBox="0 0 24 24"
+          className="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        >
           <path d="M7 3v3M17 3v3M4.5 9.5h15" strokeLinecap="round" />
           <rect x="4.5" y="5.5" width="15" height="14" rx="2.5" />
         </svg>
@@ -84,7 +91,8 @@ function DateInput({
         className="absolute inset-y-0 right-0 w-11 cursor-pointer opacity-0"
         value={isoValue}
         onChange={(event) => {
-          if (event.target.value) onChange(formatDateForDisplay(event.target.value));
+          if (event.target.value)
+            onChange(formatDateForDisplay(event.target.value));
         }}
         aria-label={`Chọn ${label} từ lịch`}
         title={`Chọn ${label} từ lịch`}
@@ -93,11 +101,21 @@ function DateInput({
   );
 }
 
-function SectionTitle({ children, hint }: { children: ReactNode; hint?: string }) {
+function SectionTitle({
+  children,
+  hint,
+}: {
+  children: ReactNode;
+  hint?: string;
+}) {
   return (
     <div className="mb-1 flex items-baseline justify-between gap-3">
       <h3 className="text-sm font-black">{children}</h3>
-      {hint ? <span className="text-[10px] font-semibold text-[var(--muted)]">{hint}</span> : null}
+      {hint ? (
+        <span className="text-[10px] font-semibold text-[var(--muted)]">
+          {hint}
+        </span>
+      ) : null}
     </div>
   );
 }
@@ -116,20 +134,24 @@ export function InvoiceFilterForm({
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }) {
   const inputChange =
-    (field: FilterField) =>
-    (event: ChangeEvent<HTMLInputElement>) =>
+    (field: FilterField) => (event: ChangeEvent<HTMLInputElement>) =>
       onChange(field, event.target.value);
 
   const selectChange =
-    (field: FilterField) =>
-    (event: ChangeEvent<HTMLSelectElement>) =>
+    (field: FilterField) => (event: ChangeEvent<HTMLSelectElement>) =>
       onChange(field, event.target.value);
 
   const processingStatuses =
-    mode.direction === "purchase" ? PURCHASE_PROCESSING_STATUS : PROCESSING_STATUS;
+    mode.direction === "purchase"
+      ? PURCHASE_PROCESSING_STATUS
+      : PROCESSING_STATUS;
 
   return (
-    <form id={id} className="grid gap-0 xl:grid-cols-[1.15fr_0.78fr_1fr]" onSubmit={onSubmit}>
+    <form
+      id={id}
+      className="grid gap-0 xl:grid-cols-[1.15fr_0.78fr_1fr]"
+      onSubmit={onSubmit}
+    >
       <section className="grid content-start gap-3 pb-5 xl:pb-0 xl:pr-7">
         <SectionTitle>Thông tin hóa đơn</SectionTitle>
 
@@ -210,7 +232,10 @@ export function InvoiceFilterForm({
         <SectionTitle hint="DD/MM/YYYY">Ngày lập hóa đơn</SectionTitle>
 
         <div className="grid gap-1.5">
-          <label htmlFor="invoice-from-date" className="text-[11px] font-semibold text-[var(--muted)]">
+          <label
+            htmlFor="invoice-from-date"
+            className="text-[11px] font-semibold text-[var(--muted)]"
+          >
             Từ ngày
           </label>
           <DateInput
@@ -222,7 +247,10 @@ export function InvoiceFilterForm({
         </div>
 
         <div className="grid gap-1.5">
-          <label htmlFor="invoice-to-date" className="text-[11px] font-semibold text-[var(--muted)]">
+          <label
+            htmlFor="invoice-to-date"
+            className="text-[11px] font-semibold text-[var(--muted)]"
+          >
             Đến ngày
           </label>
           <DateInput
@@ -234,7 +262,8 @@ export function InvoiceFilterForm({
         </div>
 
         <p className="text-[11px] leading-5 text-[var(--muted)]">
-          Nhập DD/MM/YYYY hoặc bấm biểu tượng lịch để chọn ngày. EIF sẽ tự chuyển sang định dạng API khi tra cứu.
+          Nhập DD/MM/YYYY hoặc bấm biểu tượng lịch để chọn ngày. EIF sẽ tự
+          chuyển sang định dạng API khi tra cứu.
         </p>
       </section>
 

@@ -13,7 +13,10 @@ import { useExport } from "@modules/hoadondientu.gdt.gov.vn/hooks/use-export";
 import { useInvoiceFilterForm } from "@modules/hoadondientu.gdt.gov.vn/hooks/use-invoice-filter-form";
 import { useInvoiceQuery } from "@modules/hoadondientu.gdt.gov.vn/hooks/use-invoice-query";
 import { INVOICE_MODES } from "@modules/hoadondientu.gdt.gov.vn/lib/constants";
-import { toExportPayload, toQueryPayload } from "@modules/hoadondientu.gdt.gov.vn/lib/mappers";
+import {
+  toExportPayload,
+  toQueryPayload,
+} from "@modules/hoadondientu.gdt.gov.vn/lib/mappers";
 import type { InvoiceMode } from "@modules/hoadondientu.gdt.gov.vn/model/invoice-mode";
 import { useHddtSession } from "@modules/hoadondientu.gdt.gov.vn/providers/session-provider";
 
@@ -25,7 +28,9 @@ function AuthenticatedInvoiceWorkbench({ sessionId }: { sessionId: string }) {
   const query = useInvoiceQuery(sessionId, mode);
   const exporter = useExport(sessionId);
   const [formError, setFormError] = useState<Error | null>(null);
-  const [submittedQuery, setSubmittedQuery] = useState<HoaDonQuery | null>(null);
+  const [submittedQuery, setSubmittedQuery] = useState<HoaDonQuery | null>(
+    null,
+  );
 
   function changeMode(nextMode: InvoiceMode) {
     if (
@@ -102,7 +107,8 @@ function AuthenticatedInvoiceWorkbench({ sessionId }: { sessionId: string }) {
           <div>
             <h2 className="text-xl font-bold">Loại hóa đơn</h2>
             <p className="mt-1 text-sm text-[var(--muted)]">
-              Mỗi tab tự tổng hợp dữ liệu hóa đơn thường và hóa đơn khởi tạo từ máy tính tiền.
+              Mỗi tab tự tổng hợp dữ liệu hóa đơn thường và hóa đơn khởi tạo từ
+              máy tính tiền.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -128,7 +134,9 @@ function AuthenticatedInvoiceWorkbench({ sessionId }: { sessionId: string }) {
         <div className="mb-6 flex flex-col gap-4 border-b border-[var(--border)] pb-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="text-xl font-bold">{mode.label}</h2>
-            <p className="mt-1 text-sm text-[var(--muted)]">{mode.description}</p>
+            <p className="mt-1 text-sm text-[var(--muted)]">
+              {mode.description}
+            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -151,7 +159,12 @@ function AuthenticatedInvoiceWorkbench({ sessionId }: { sessionId: string }) {
                 Xuất file
               </Button>
             */}
-            <Button type="button" variant="secondary" busy={exporter.loading} onClick={exportFile}>
+            <Button
+              type="button"
+              variant="secondary"
+              busy={exporter.loading}
+              onClick={exportFile}
+            >
               Xuất file
             </Button>
           </div>
@@ -226,7 +239,9 @@ function AuthenticatedInvoiceWorkbench({ sessionId }: { sessionId: string }) {
         {pagination?.truncated ? (
           <div className="mb-4">
             <Notice tone="warning">
-              Kết quả rất lớn hoặc có một khoảng dữ liệu vượt khả năng phân trang chính xác của API công khai. EIF giới hạn tối đa 100 trang đầu để tránh tạo quá nhiều request tới hệ thống Thuế.
+              Kết quả rất lớn hoặc có một khoảng dữ liệu vượt khả năng phân
+              trang chính xác của API công khai. EIF giới hạn tối đa 100 trang
+              đầu để tránh tạo quá nhiều request tới hệ thống Thuế.
             </Notice>
           </div>
         ) : null}
@@ -241,7 +256,9 @@ function AuthenticatedInvoiceWorkbench({ sessionId }: { sessionId: string }) {
           </div>
         ) : hasFailedRanges ? (
           <div className="mb-4">
-            <Notice tone="warning">Một phần dữ liệu chưa tải được. Vui lòng thử lại.</Notice>
+            <Notice tone="warning">
+              Một phần dữ liệu chưa tải được. Vui lòng thử lại.
+            </Notice>
           </div>
         ) : null}
 

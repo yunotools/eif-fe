@@ -24,7 +24,8 @@ export function useCaptcha() {
       setData(captcha);
       return captcha;
     } catch (value) {
-      if (value instanceof DOMException && value.name === "AbortError") return null;
+      if (value instanceof DOMException && value.name === "AbortError")
+        return null;
       const normalized = toAppError(value);
       setError(normalized);
       throw normalized;

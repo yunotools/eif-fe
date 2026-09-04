@@ -9,10 +9,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import {
-  DEFAULT_THEME_ACCENT,
-  isThemeAccent,
-} from "@global/utils/color";
+import { DEFAULT_THEME_ACCENT, isThemeAccent } from "@global/utils/color";
 
 export type ThemeMode = "light" | "dark" | "system";
 
@@ -79,15 +76,24 @@ function emitSettingsChange(): void {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const theme = useSyncExternalStore(subscribeSettings, themeSnapshot, themeServerSnapshot);
-  const accent = useSyncExternalStore(subscribeSettings, accentSnapshot, accentServerSnapshot);
+  const theme = useSyncExternalStore(
+    subscribeSettings,
+    themeSnapshot,
+    themeServerSnapshot,
+  );
+  const accent = useSyncExternalStore(
+    subscribeSettings,
+    accentSnapshot,
+    accentServerSnapshot,
+  );
   const prefersDark = useSyncExternalStore(
     subscribeColorScheme,
     prefersDarkSnapshot,
     prefersDarkServerSnapshot,
   );
 
-  const resolvedTheme = theme === "system" ? (prefersDark ? "dark" : "light") : theme;
+  const resolvedTheme =
+    theme === "system" ? (prefersDark ? "dark" : "light") : theme;
 
   useEffect(() => {
     // Đọc trực tiếp snapshot thật từ browser thay vì dùng server snapshot của
@@ -96,7 +102,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const actualTheme = themeSnapshot();
     const actualPrefersDark = prefersDarkSnapshot();
     const actualResolvedTheme =
-      actualTheme === "system" ? (actualPrefersDark ? "dark" : "light") : actualTheme;
+      actualTheme === "system"
+        ? actualPrefersDark
+          ? "dark"
+          : "light"
+        : actualTheme;
 
     document.documentElement.dataset.theme = actualResolvedTheme;
     document.documentElement.style.setProperty("--accent", accentSnapshot());
@@ -119,7 +129,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     [theme, resolvedTheme, setTheme, accent, setAccent],
   );
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  );
 }
 
 export function useTheme(): ThemeContextValue {

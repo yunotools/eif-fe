@@ -5,7 +5,9 @@ export type HealthResponse = {
   status: string;
 };
 
-export function getBackendHealth(signal?: AbortSignal): Promise<HealthResponse> {
+export function getBackendHealth(
+  signal?: AbortSignal,
+): Promise<HealthResponse> {
   return requestJson<HealthResponse>(GLOBAL_ENDPOINTS.health, {
     base: "backend",
     signal,

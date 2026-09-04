@@ -16,7 +16,8 @@ import {
 } from "@modules/hoadondientu.gdt.gov.vn/lib/session-storage";
 import type { StoredHddtSession } from "@modules/hoadondientu.gdt.gov.vn/model/session";
 
-export type SessionPhase = "booting" | "anonymous" | "validating" | "authenticated";
+export type SessionPhase =
+  "booting" | "anonymous" | "validating" | "authenticated";
 
 type SessionState = {
   phase: SessionPhase;
@@ -39,7 +40,10 @@ function reducer(state: SessionState, action: SessionAction): SessionState {
   }
 }
 
-function fromSessionResponse(info: SessionResponse, remember: boolean): StoredHddtSession {
+function fromSessionResponse(
+  info: SessionResponse,
+  remember: boolean,
+): StoredHddtSession {
   return {
     id: info.session_id,
     username: info.username,
@@ -58,7 +62,10 @@ type SessionContextValue = SessionState & {
     username: string,
     remember: boolean,
   ) => void;
-  acceptSessionInfo: (info: SessionResponse, remember: boolean) => StoredHddtSession;
+  acceptSessionInfo: (
+    info: SessionResponse,
+    remember: boolean,
+  ) => StoredHddtSession;
   clearSession: () => void;
 };
 
@@ -101,7 +108,9 @@ export function HddtSessionProvider({ children }: { children: ReactNode }) {
         expiredAt: response.expired_at,
         remainingSeconds: Math.max(
           0,
-          Math.floor((new Date(response.expired_at).getTime() - Date.now()) / 1_000),
+          Math.floor(
+            (new Date(response.expired_at).getTime() - Date.now()) / 1_000,
+          ),
         ),
         remember,
         lastSyncedAt: new Date().toISOString(),
@@ -131,11 +140,14 @@ export function HddtSessionProvider({ children }: { children: ReactNode }) {
     ],
   );
 
-  return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
+  return (
+    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
+  );
 }
 
 export function useHddtSession(): SessionContextValue {
   const context = useContext(SessionContext);
-  if (!context) throw new Error("useHddtSession must be used inside HddtSessionProvider");
+  if (!context)
+    throw new Error("useHddtSession must be used inside HddtSessionProvider");
   return context;
 }

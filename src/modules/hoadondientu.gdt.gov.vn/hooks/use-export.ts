@@ -13,7 +13,10 @@ type ExportState = {
 };
 
 export function useExport(sessionId: string | undefined) {
-  const [state, setState] = useState<ExportState>({ loading: false, error: null });
+  const [state, setState] = useState<ExportState>({
+    loading: false,
+    error: null,
+  });
   const controllerRef = useRef<AbortController | null>(null);
 
   const execute = useCallback(
@@ -26,12 +29,18 @@ export function useExport(sessionId: string | undefined) {
       setState({ loading: true, error: null });
 
       try {
-        const file = await exportInvoices(sessionId, mode, payload, controller.signal);
+        const file = await exportInvoices(
+          sessionId,
+          mode,
+          payload,
+          controller.signal,
+        );
         const fallbackName = `hddtgdt-${mode.direction}-${payload.from_date}_${payload.to_date}.xlsx`;
         downloadBlob(file.blob, file.filename || fallbackName);
         setState({ loading: false, error: null });
       } catch (value) {
-        if (value instanceof DOMException && value.name === "AbortError") return;
+        if (value instanceof DOMException && value.name === "AbortError")
+          return;
         const error = toAppError(value);
         setState({ loading: false, error });
         throw error;
@@ -40,7 +49,10 @@ export function useExport(sessionId: string | undefined) {
     [sessionId],
   );
 
-  const resetError = useCallback(() => setState((current) => ({ ...current, error: null })), []);
+  const resetError = useCallback(
+    () => setState((current) => ({ ...current, error: null })),
+    [],
+  );
 
   return { ...state, execute, resetError };
 }

@@ -31,7 +31,11 @@ export function useAsyncAction<TArgs extends unknown[], TResult>(
         return data;
       } catch (error) {
         const normalized = toAppError(error);
-        setState((current) => ({ ...current, error: normalized, loading: false }));
+        setState((current) => ({
+          ...current,
+          error: normalized,
+          loading: false,
+        }));
         throw normalized;
       }
     },

@@ -66,9 +66,11 @@ async function parseApiError(
     }
   }
 
-  const body = typeof parsed === "object" && parsed !== null ? parsed : undefined;
+  const body =
+    typeof parsed === "object" && parsed !== null ? parsed : undefined;
   const code = body?.code || `HTTP-${response.status}`;
-  const requestId = body?.request_id || response.headers.get("X-Request-ID") || undefined;
+  const requestId =
+    body?.request_id || response.headers.get("X-Request-ID") || undefined;
 
   return new AppError({
     status: response.status,
@@ -83,7 +85,8 @@ async function parseApiError(
 }
 
 function broadcastUnauthorized(error: AppError, sessionAware: boolean): void {
-  if (!sessionAware || error.status !== 401 || typeof window === "undefined") return;
+  if (!sessionAware || error.status !== 401 || typeof window === "undefined")
+    return;
   window.dispatchEvent(
     new CustomEvent(SESSION_UNAUTHORIZED_EVENT, {
       detail: { code: error.code, requestId: error.requestId },
@@ -91,7 +94,10 @@ function broadcastUnauthorized(error: AppError, sessionAware: boolean): void {
   );
 }
 
-async function request(path: string, options: RequestOptions = {}): Promise<Response> {
+async function request(
+  path: string,
+  options: RequestOptions = {},
+): Promise<Response> {
   const {
     method = "GET",
     base = "api",
@@ -123,7 +129,8 @@ async function request(path: string, options: RequestOptions = {}): Promise<Resp
       signal,
     });
   } catch (cause) {
-    if (cause instanceof DOMException && cause.name === "AbortError") throw cause;
+    if (cause instanceof DOMException && cause.name === "AbortError")
+      throw cause;
 
     const error = appErrorFromCode(ERROR_CODES.network, {
       requestId,
@@ -189,7 +196,10 @@ export async function requestFile(
 
   return {
     blob: await response.blob(),
-    filename: filenameFromDisposition(response.headers.get("Content-Disposition")),
-    contentType: response.headers.get("Content-Type") || "application/octet-stream",
+    filename: filenameFromDisposition(
+      response.headers.get("Content-Disposition"),
+    ),
+    contentType:
+      response.headers.get("Content-Type") || "application/octet-stream",
   };
 }

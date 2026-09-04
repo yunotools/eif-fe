@@ -25,7 +25,9 @@ export function downloadBlob(blob: Blob, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
-export function extensionFromContentType(contentType: string): "xlsx" | "zip" | "bin" {
+export function extensionFromContentType(
+  contentType: string,
+): "xlsx" | "zip" | "bin" {
   const type = contentType.toLowerCase();
 
   if (type.includes("spreadsheetml")) {

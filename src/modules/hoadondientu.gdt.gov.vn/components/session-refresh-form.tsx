@@ -34,11 +34,16 @@ export function SessionRefreshForm({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <form className="mt-5 grid gap-4 border-t border-[var(--border)] pt-5" onSubmit={submit}>
+    <form
+      className="mt-5 grid gap-4 border-t border-[var(--border)] pt-5"
+      onSubmit={submit}
+    >
       <div>
         <p className="font-bold">Làm mới phiên thực sự</p>
         <p className="mt-1 text-xs leading-5 text-[var(--muted)]">
-          EIF sẽ dùng tài khoản của session hiện tại cùng mật khẩu và captcha mới để đăng nhập lại Cục Thuế, cập nhật token/giờ hết hạn nhưng giữ nguyên EIF Session ID. Mật khẩu không được lưu.
+          EIF sẽ dùng tài khoản của session hiện tại cùng mật khẩu và captcha
+          mới để đăng nhập lại Cục Thuế, cập nhật token/giờ hết hạn nhưng giữ
+          nguyên EIF Session ID. Mật khẩu không được lưu.
         </p>
       </div>
 
@@ -49,7 +54,9 @@ export function SessionRefreshForm({ onDone }: { onDone: () => void }) {
             type="password"
             autoComplete="current-password"
             value={password}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setPassword(event.target.value)
+            }
             required
           />
         </Field>
@@ -62,7 +69,9 @@ export function SessionRefreshForm({ onDone }: { onDone: () => void }) {
           <input
             className="eif-input mt-2 uppercase"
             value={captchaValue}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setCaptchaValue(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setCaptchaValue(event.target.value)
+            }
             placeholder="Nhập captcha"
             autoCapitalize="characters"
             required
@@ -74,7 +83,11 @@ export function SessionRefreshForm({ onDone }: { onDone: () => void }) {
       {refresh.error ? <ErrorNotice value={refresh.error} /> : null}
 
       <div className="flex flex-wrap gap-2">
-        <Button type="submit" busy={refresh.loading} disabled={!captcha.data?.key}>
+        <Button
+          type="submit"
+          busy={refresh.loading}
+          disabled={!captcha.data?.key}
+        >
           Xác nhận làm mới
         </Button>
         <Button type="button" variant="ghost" onClick={onDone}>

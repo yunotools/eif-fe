@@ -12,7 +12,10 @@ function isActive(pathname: string, href: string): boolean {
   const normalizedPath = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
   const normalizedHref = href === "/" ? "/" : href.replace(/\/+$/, "");
   if (normalizedHref === "/") return normalizedPath === "/";
-  return normalizedPath === normalizedHref || normalizedPath.startsWith(`${normalizedHref}/`);
+  return (
+    normalizedPath === normalizedHref ||
+    normalizedPath.startsWith(`${normalizedHref}/`)
+  );
 }
 
 export function AppShell({
@@ -41,18 +44,28 @@ export function AppShell({
           <span className="min-w-0">
             <span className="flex items-baseline gap-2">
               <strong className="block text-base">{config.app.name}</strong>
-              <small className="text-[10px] font-bold text-[var(--accent)]">{config.app.version}</small>
+              <small className="text-[10px] font-bold text-[var(--accent)]">
+                {config.app.version}
+              </small>
             </span>
-            <small className="block truncate text-[11px] text-[var(--muted)]">{config.app.fullName}</small>
+            <small className="block truncate text-[11px] text-[var(--muted)]">
+              {config.app.fullName}
+            </small>
           </span>
         </Link>
 
-        <nav className="mt-5 flex gap-2 overflow-x-auto pb-1 lg:mt-8 lg:grid lg:overflow-visible" aria-label="Điều hướng chính">
+        <nav
+          className="mt-5 flex gap-2 overflow-x-auto pb-1 lg:mt-8 lg:grid lg:overflow-visible"
+          aria-label="Điều hướng chính"
+        >
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={cn("eif-nav-link", isActive(pathname, item.href) && "eif-nav-link-active")}
+              className={cn(
+                "eif-nav-link",
+                isActive(pathname, item.href) && "eif-nav-link-active",
+              )}
             >
               {item.label}
             </Link>

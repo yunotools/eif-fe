@@ -26,8 +26,14 @@ export function ThemeControl() {
       </label>
 
       <div className="grid gap-2">
-        <span className="text-xs font-semibold text-[var(--muted)]">Màu chủ đạo</span>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Màu chủ đạo">
+        <span className="text-xs font-semibold text-[var(--muted)]">
+          Màu chủ đạo
+        </span>
+        <div
+          className="flex flex-wrap gap-2"
+          role="group"
+          aria-label="Màu chủ đạo"
+        >
           {THEME_ACCENTS.map((item) => (
             <button
               key={item.value}

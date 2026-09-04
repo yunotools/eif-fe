@@ -116,7 +116,11 @@ export function HddtSessionSyncProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleUnauthorized = () => clearSession();
     window.addEventListener(SESSION_UNAUTHORIZED_EVENT, handleUnauthorized);
-    return () => window.removeEventListener(SESSION_UNAUTHORIZED_EVENT, handleUnauthorized);
+    return () =>
+      window.removeEventListener(
+        SESSION_UNAUTHORIZED_EVENT,
+        handleUnauthorized,
+      );
   }, [clearSession]);
 
   useEffect(() => {
@@ -144,18 +148,21 @@ export function HddtSessionSyncProvider({ children }: { children: ReactNode }) {
     await syncSession(true);
   }, [syncSession]);
 
-  const value = useMemo(
-    () => ({ syncError, syncNow }),
-    [syncError, syncNow],
-  );
+  const value = useMemo(() => ({ syncError, syncNow }), [syncError, syncNow]);
 
-  return <SessionSyncContext.Provider value={value}>{children}</SessionSyncContext.Provider>;
+  return (
+    <SessionSyncContext.Provider value={value}>
+      {children}
+    </SessionSyncContext.Provider>
+  );
 }
 
 export function useHddtSessionSync(): SessionSyncContextValue {
   const context = useContext(SessionSyncContext);
   if (!context) {
-    throw new Error("useHddtSessionSync must be used inside HddtSessionSyncProvider");
+    throw new Error(
+      "useHddtSessionSync must be used inside HddtSessionSyncProvider",
+    );
   }
   return context;
 }

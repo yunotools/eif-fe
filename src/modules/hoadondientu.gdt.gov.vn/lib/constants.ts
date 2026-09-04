@@ -43,14 +43,16 @@ export const INVOICE_MODES: InvoiceMode[] = [
     id: "sold",
     label: "Hóa đơn bán ra",
     shortLabel: "Hóa đơn bán ra",
-    description: "Gộp hóa đơn bán ra thường và hóa đơn bán ra từ máy tính tiền.",
+    description:
+      "Gộp hóa đơn bán ra thường và hóa đơn bán ra từ máy tính tiền.",
     direction: "sold",
   },
   {
     id: "purchase",
     label: "Hóa đơn mua vào",
     shortLabel: "Hóa đơn mua vào",
-    description: "Gộp hóa đơn mua vào thường và hóa đơn mua vào từ máy tính tiền.",
+    description:
+      "Gộp hóa đơn mua vào thường và hóa đơn mua vào từ máy tính tiền.",
     direction: "purchase",
   },
 ];

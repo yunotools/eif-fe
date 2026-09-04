@@ -1,4 +1,8 @@
-import { requestFile, requestJson, type DownloadResponse } from "@global/protocol/http-client";
+import {
+  requestFile,
+  requestJson,
+  type DownloadResponse,
+} from "@global/protocol/http-client";
 import { appErrorFromCode } from "@global/error/app-error";
 import { ERROR_CODES } from "@global/error/error-code";
 import type {
@@ -22,7 +26,9 @@ type InvoiceQueryResponse = Partial<
 };
 
 function finiteInteger(value: unknown, fallback: number): number {
-  return typeof value === "number" && Number.isSafeInteger(value) ? value : fallback;
+  return typeof value === "number" && Number.isSafeInteger(value)
+    ? value
+    : fallback;
 }
 
 function normalizePagination(
@@ -32,7 +38,8 @@ function normalizePagination(
 ): InvoicePagination {
   const fallbackPage = Math.max(1, finiteInteger(payload.page, 1));
   const fallbackPageSize = QUERY_RESULT_SIZE;
-  const fallbackTotalPages = total > 0 ? Math.ceil(total / fallbackPageSize) : 0;
+  const fallbackTotalPages =
+    total > 0 ? Math.ceil(total / fallbackPageSize) : 0;
   const value = response.pagination;
 
   if (!value || typeof value !== "object") {
@@ -47,8 +54,14 @@ function normalizePagination(
   }
 
   const page = Math.max(1, finiteInteger(value.page, fallbackPage));
-  const pageSize = Math.max(1, finiteInteger(value.page_size, fallbackPageSize));
-  const totalPages = Math.max(0, finiteInteger(value.total_pages, fallbackTotalPages));
+  const pageSize = Math.max(
+    1,
+    finiteInteger(value.page_size, fallbackPageSize),
+  );
+  const totalPages = Math.max(
+    0,
+    finiteInteger(value.total_pages, fallbackTotalPages),
+  );
 
   return {
     page,
@@ -79,9 +92,14 @@ function normalizeQueryResult(
 
   return {
     from_date:
-      typeof response.from_date === "string" ? response.from_date : payload.from_date,
-    to_date: typeof response.to_date === "string" ? response.to_date : payload.to_date,
-    failed_ranges: Array.isArray(response.failed_ranges) ? response.failed_ranges : [],
+      typeof response.from_date === "string"
+        ? response.from_date
+        : payload.from_date,
+    to_date:
+      typeof response.to_date === "string" ? response.to_date : payload.to_date,
+    failed_ranges: Array.isArray(response.failed_ranges)
+      ? response.failed_ranges
+      : [],
     datas: Array.isArray(response.datas) ? response.datas : [],
     total,
     state: response.state ?? null,

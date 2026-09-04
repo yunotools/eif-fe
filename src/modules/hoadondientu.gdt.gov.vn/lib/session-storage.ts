@@ -20,7 +20,9 @@ function parseSession(raw: string | null): StoredHddtSession | null {
       username: typeof parsed.username === "string" ? parsed.username : "",
       expiredAt: parsed.expiredAt,
       remainingSeconds:
-        typeof parsed.remainingSeconds === "number" ? parsed.remainingSeconds : 0,
+        typeof parsed.remainingSeconds === "number"
+          ? parsed.remainingSeconds
+          : 0,
       remember: parsed.remember !== false,
       lastSyncedAt:
         typeof parsed.lastSyncedAt === "string" ? parsed.lastSyncedAt : "",
@@ -42,7 +44,10 @@ export function storeSession(session: StoredHddtSession): void {
   if (typeof window === "undefined") return;
   clearStoredSession();
   const target = session.remember ? window.localStorage : window.sessionStorage;
-  target.setItem(session.remember ? LOCAL_KEY : TEMP_KEY, JSON.stringify(session));
+  target.setItem(
+    session.remember ? LOCAL_KEY : TEMP_KEY,
+    JSON.stringify(session),
+  );
 }
 
 export function clearStoredSession(): void {

@@ -24,12 +24,15 @@ export function HomePage({ modules }: { modules: FrontendModuleDefinition[] }) {
         />
         <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div>
-            <p className="eif-eyebrow">{config.app.name} · {config.app.version}</p>
+            <p className="eif-eyebrow">
+              {config.app.name} · {config.app.version}
+            </p>
             <h1 className="mt-4 max-w-4xl text-5xl font-black leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
               {config.app.fullName}
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-7 text-[var(--muted)] sm:text-lg">
-              Không gian làm việc tập trung để đăng nhập, tra cứu và xuất dữ liệu hóa đơn điện tử nhanh hơn.
+              Không gian làm việc tập trung để đăng nhập, tra cứu và xuất dữ
+              liệu hóa đơn điện tử nhanh hơn.
             </p>
           </div>
           <div className="border-l-2 border-[var(--accent)] pl-4 text-sm leading-6 text-[var(--muted)]">
@@ -43,9 +46,13 @@ export function HomePage({ modules }: { modules: FrontendModuleDefinition[] }) {
         <div className="mb-7 flex items-end justify-between gap-4">
           <div>
             <p className="eif-eyebrow">Workspace</p>
-            <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">Chức năng</h2>
+            <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
+              Chức năng
+            </h2>
           </div>
-          <span className="text-xs font-semibold text-[var(--muted)]">{modules.length} module</span>
+          <span className="text-xs font-semibold text-[var(--muted)]">
+            {modules.length} module
+          </span>
         </div>
 
         <div className="border-y border-[var(--border)]">
@@ -63,14 +70,21 @@ export function HomePage({ modules }: { modules: FrontendModuleDefinition[] }) {
                 </div>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="text-lg font-bold sm:text-xl">{module.name}</h3>
+                    <h3 className="text-lg font-bold sm:text-xl">
+                      {module.name}
+                    </h3>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted)]">
                       {statusText(module.status)}
                     </span>
                   </div>
-                  <p className="mt-1 max-w-2xl text-sm leading-6 text-[var(--muted)]">{module.description}</p>
+                  <p className="mt-1 max-w-2xl text-sm leading-6 text-[var(--muted)]">
+                    {module.description}
+                  </p>
                 </div>
-                <span className="justify-self-end text-2xl text-[var(--accent)] transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">
+                <span
+                  className="justify-self-end text-2xl text-[var(--accent)] transition-transform duration-200 group-hover:translate-x-1"
+                  aria-hidden="true"
+                >
                   →
                 </span>
               </>

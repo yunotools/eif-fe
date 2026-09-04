@@ -6,6 +6,9 @@ import type { AuthenticationRequest } from "@modules/hoadondientu.gdt.gov.vn/dto
 import { authenticate } from "@modules/hoadondientu.gdt.gov.vn/service/auth.service";
 
 export function useAuthenticate() {
-  const action = useCallback((payload: AuthenticationRequest) => authenticate(payload), []);
+  const action = useCallback(
+    (payload: AuthenticationRequest) => authenticate(payload),
+    [],
+  );
   return useAsyncAction(action);
 }

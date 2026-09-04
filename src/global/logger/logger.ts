@@ -20,7 +20,10 @@ function sanitize(value: unknown, key = "", depth = 0): unknown {
     return {
       name: value.name,
       message: value.message,
-      cause: value.cause === undefined ? undefined : sanitize(value.cause, "cause", depth + 1),
+      cause:
+        value.cause === undefined
+          ? undefined
+          : sanitize(value.cause, "cause", depth + 1),
     };
   }
 
@@ -30,10 +33,12 @@ function sanitize(value: unknown, key = "", depth = 0): unknown {
 
   if (value && typeof value === "object") {
     return Object.fromEntries(
-      Object.entries(value as Record<string, unknown>).map(([childKey, childValue]) => [
-        childKey,
-        sanitize(childValue, childKey, depth + 1),
-      ]),
+      Object.entries(value as Record<string, unknown>).map(
+        ([childKey, childValue]) => [
+          childKey,
+          sanitize(childValue, childKey, depth + 1),
+        ],
+      ),
     );
   }
 
@@ -44,7 +49,11 @@ function enabled(level: LogLevel): boolean {
   return LEVEL_WEIGHT[level] >= LEVEL_WEIGHT[config.logger.level];
 }
 
-function write(level: Exclude<LogLevel, "silent">, event: string, fields?: LogFields): void {
+function write(
+  level: Exclude<LogLevel, "silent">,
+  event: string,
+  fields?: LogFields,
+): void {
   if (!enabled(level)) return;
 
   const payload = fields ? sanitize(fields) : undefined;
