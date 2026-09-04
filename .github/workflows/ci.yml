@@ -1,0 +1,199 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NPM_VERSION: "10.9.2"
+  TRIVY_VERSION: "v0.74.0"
+
+jobs:
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Pin npm
+        run: npm install --global "npm@${NPM_VERSION}"
+
+      - name: Toolchain
+        run: |
+          node --version
+          npm --version
+
+      - name: Lockfile check
+        run: make lock-check
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Format check
+        run: make format-check
+
+      - name: Architecture boundaries
+        run: make architecture
+
+      - name: Lint
+        run: make lint
+
+      - name: Typecheck
+        run: make typecheck
+
+      - name: Test
+        run: make test
+
+  security-source:
+    name: Source security
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Trivy
+        uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
+        with:
+          version: ${{ env.TRIVY_VERSION }}
+          cache: true
+
+      - name: Scan source
+        run: ./scripts/ci/trivy-source.sh dist/security/source
+
+      - name: Upload source security reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-security-${{ github.sha }}-${{ github.run_attempt }}
+          path: dist/security/source/
+          if-no-files-found: warn
+          retention-days: 30
+
+  build:
+    name: Static build
+    needs: [quality, security-source]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    env:
+      NEXT_PUBLIC_APP_NAME: EIF
+      NEXT_PUBLIC_APP_VERSION: ci-${{ github.sha }}
+      NEXT_PUBLIC_API_BASE_URL: /api/v1
+      NEXT_PUBLIC_SESSION_SYNC_INTERVAL_MS: "60000"
+      NEXT_PUBLIC_LOG_LEVEL: info
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Pin npm
+        run: npm install --global "npm@${NPM_VERSION}"
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Build static export
+        run: make build
+
+      - name: Package static export
+        run: ./scripts/ci/package-static.sh dist/static
+
+      - name: Upload static export
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-static-${{ github.sha }}-${{ github.run_attempt }}
+          path: dist/static/
+          if-no-files-found: error
+          retention-days: 30
+
+  receipt:
+    name: CI receipt
+    needs: [quality, security-source, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download source security artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-security-${{ github.sha }}-${{ github.run_attempt }}
+          path: dist/inputs/source-security
+
+      - name: Download static artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-static-${{ github.sha }}-${{ github.run_attempt }}
+          path: dist/inputs/static
+
+      - name: Generate CI receipt
+        run: ./scripts/ci/create-receipt.sh
+
+      - name: Upload CI receipt
+        uses: actions/upload-artifact@v7
+        with:
+          name: eif-frontend-ci-${{ github.sha }}-${{ github.run_attempt }}
+          path: dist/ci/
+          if-no-files-found: error
+          retention-days: 30
+
+  notify-eif-ci:
+    name: Notify release orchestrator
+    needs: receipt
+    if: >
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Create GitHub App token for eif-ci
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.EIF_GITHUB_APP_CLIENT_ID }}
+          private-key: ${{ secrets.EIF_GITHUB_APP_PRIVATE_KEY }}
+          owner: ${{ vars.EIF_GITHUB_OWNER }}
+          repositories: ${{ vars.EIF_CI_REPO }}
+          permission-contents: write
+
+      - name: Dispatch frontend candidate
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          EIF_GITHUB_OWNER: ${{ vars.EIF_GITHUB_OWNER }}
+          EIF_CI_REPO: ${{ vars.EIF_CI_REPO }}
+        run: ./scripts/ci/dispatch-candidate.sh
