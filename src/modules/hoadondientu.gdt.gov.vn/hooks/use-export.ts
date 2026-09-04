@@ -2,8 +2,9 @@
 
 import { useCallback, useRef, useState } from "react";
 import { toAppError } from "@global/error/error-handler";
-import { downloadBlob, extensionFromContentType } from "@global/utils/download";
-import type { ExportInvoiceRequest } from "@modules/hoadondientu.gdt.gov.vn/dto/invoice";
+import { downloadBlob } from "@global/utils/download";
+import type { ExportInvoiceWrapperRequest } from "@modules/hoadondientu.gdt.gov.vn/dto/invoice";
+import type { InvoiceMode } from "@modules/hoadondientu.gdt.gov.vn/model/invoice-mode";
 import { exportInvoices } from "@modules/hoadondientu.gdt.gov.vn/service/invoice.service";
 
 type ExportState = {
@@ -16,7 +17,7 @@ export function useExport(sessionId: string | undefined) {
   const controllerRef = useRef<AbortController | null>(null);
 
   const execute = useCallback(
-    async (payload: ExportInvoiceRequest, merged: boolean) => {
+    async (mode: InvoiceMode, payload: ExportInvoiceWrapperRequest) => {
       if (!sessionId) throw new Error("Bạn chưa có EIF session.");
 
       controllerRef.current?.abort();
@@ -25,11 +26,8 @@ export function useExport(sessionId: string | undefined) {
       setState({ loading: true, error: null });
 
       try {
-        const file = await exportInvoices(sessionId, payload, merged, controller.signal);
-        const fallbackExtension = extensionFromContentType(file.contentType);
-        const fallbackName = merged
-          ? `hddtgdt-${payload.sco ? "sco" : "standard"}-${payload.type}-merged-${payload.from_date}_${payload.to_date}.xlsx`
-          : `hddtgdt-${payload.sco ? "sco" : "standard"}-${payload.type}-export-${payload.from_date}_${payload.to_date}.${fallbackExtension}`;
+        const file = await exportInvoices(sessionId, mode, payload, controller.signal);
+        const fallbackName = `hddtgdt-${mode.direction}-${payload.from_date}_${payload.to_date}.xlsx`;
         downloadBlob(file.blob, file.filename || fallbackName);
         setState({ loading: false, error: null });
       } catch (value) {

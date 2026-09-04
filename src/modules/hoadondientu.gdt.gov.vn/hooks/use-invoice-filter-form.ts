@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useReducer } from "react";
-import { currentMonthDateRange } from "@global/utils/date";
+import { currentMonthDateRange, formatDateForDisplay } from "@global/utils/date";
 import {
   EMPTY_FILTER_FORM,
   type InvoiceFilterFormState,
@@ -15,8 +15,8 @@ function createInitialState(): InvoiceFilterFormState {
   const range = currentMonthDateRange();
   return {
     ...EMPTY_FILTER_FORM,
-    from_date: range.from,
-    to_date: range.to,
+    from_date: formatDateForDisplay(range.from),
+    to_date: formatDateForDisplay(range.to),
   };
 }
 
@@ -42,7 +42,11 @@ export function useInvoiceFilterForm() {
 
   const reset = useCallback(() => {
     const range = currentMonthDateRange();
-    dispatch({ type: "RESET", from: range.from, to: range.to });
+    dispatch({
+      type: "RESET",
+      from: formatDateForDisplay(range.from),
+      to: formatDateForDisplay(range.to),
+    });
   }, []);
 
   return { form, change, reset };

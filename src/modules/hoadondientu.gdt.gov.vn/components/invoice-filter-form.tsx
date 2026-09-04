@@ -1,7 +1,11 @@
 "use client";
 
 import type { ChangeEvent, FormEvent, ReactNode } from "react";
-import { Button } from "@global/components/button";
+import {
+  displayDateToISO,
+  formatDateForDisplay,
+  normalizeDateDisplayInput,
+} from "@global/utils/date";
 import {
   INVOICE_STATUS,
   PROCESSING_STATUS,
@@ -31,20 +35,85 @@ function FilterRow({
   );
 }
 
+
+function DateInput({
+  id,
+  value,
+  onChange,
+  label,
+}: {
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+  label: string;
+}) {
+  const isoValue = displayDateToISO(value) ?? "";
+
+  return (
+    <div className="relative">
+      <input
+        id={id}
+        className="eif-input pr-12 tabular-nums"
+        type="text"
+        inputMode="numeric"
+        autoComplete="off"
+        maxLength={10}
+        placeholder="DD/MM/YYYY"
+        value={value}
+        onChange={(event) => onChange(normalizeDateDisplayInput(event.target.value))}
+        required
+      />
+
+      <span
+        className="pointer-events-none absolute inset-y-0 right-0 flex w-11 items-center justify-center text-[var(--muted)]"
+        aria-hidden="true"
+      >
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <path d="M7 3v3M17 3v3M4.5 9.5h15" strokeLinecap="round" />
+          <rect x="4.5" y="5.5" width="15" height="14" rx="2.5" />
+        </svg>
+      </span>
+
+      {/*
+        Native date input chỉ phủ lên vùng icon lịch. End-user vẫn thấy/nhập
+        DD/MM/YYYY ở input text nhưng khi bấm icon sẽ dùng calendar picker
+        của browser/OS.
+      */}
+      <input
+        type="date"
+        className="absolute inset-y-0 right-0 w-11 cursor-pointer opacity-0"
+        value={isoValue}
+        onChange={(event) => {
+          if (event.target.value) onChange(formatDateForDisplay(event.target.value));
+        }}
+        aria-label={`Chọn ${label} từ lịch`}
+        title={`Chọn ${label} từ lịch`}
+      />
+    </div>
+  );
+}
+
+function SectionTitle({ children, hint }: { children: ReactNode; hint?: string }) {
+  return (
+    <div className="mb-1 flex items-baseline justify-between gap-3">
+      <h3 className="text-sm font-black">{children}</h3>
+      {hint ? <span className="text-[10px] font-semibold text-[var(--muted)]">{hint}</span> : null}
+    </div>
+  );
+}
+
 export function InvoiceFilterForm({
+  id,
   form,
   mode,
-  loading,
   onChange,
   onSubmit,
-  onReset,
 }: {
+  id: string;
   form: InvoiceFilterFormState;
   mode: InvoiceMode;
-  loading: boolean;
   onChange: (field: FilterField, value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  onReset: () => void;
 }) {
   const inputChange =
     (field: FilterField) =>
@@ -60,36 +129,9 @@ export function InvoiceFilterForm({
     mode.direction === "purchase" ? PURCHASE_PROCESSING_STATUS : PROCESSING_STATUS;
 
   return (
-    <form className="grid gap-5" onSubmit={onSubmit}>
-      <div className="eif-filter-grid xl:grid-cols-2">
-        <div className="eif-filter-row xl:col-span-2">
-          <span className="eif-filter-row-label">Ngày lập hóa đơn</span>
-          <div className="eif-date-range eif-filter-control">
-            <label className="grid gap-1">
-              <span className="text-[11px] font-semibold text-[var(--muted)]">Từ ngày</span>
-              <input
-                id="invoice-from-date"
-                className="eif-input"
-                type="date"
-                value={form.from_date}
-                onChange={inputChange("from_date")}
-                required
-              />
-            </label>
-            <span className="eif-date-separator" aria-hidden="true">đến</span>
-            <label className="grid gap-1">
-              <span className="text-[11px] font-semibold text-[var(--muted)]">Đến ngày</span>
-              <input
-                id="invoice-to-date"
-                className="eif-input"
-                type="date"
-                value={form.to_date}
-                onChange={inputChange("to_date")}
-                required
-              />
-            </label>
-          </div>
-        </div>
+    <form id={id} className="grid gap-0 xl:grid-cols-[1.15fr_0.78fr_1fr]" onSubmit={onSubmit}>
+      <section className="grid content-start gap-3 pb-5 xl:pb-0 xl:pr-7">
+        <SectionTitle>Thông tin hóa đơn</SectionTitle>
 
         <FilterRow id="invoice-number" label="Số hóa đơn">
           <input
@@ -147,16 +189,57 @@ export function InvoiceFilterForm({
           />
         </FilterRow>
 
-        <FilterRow id="buyer-id" label="CCCD người mua">
-          <input
-            id="buyer-id"
-            className="eif-input"
-            value={form.nmcmnd}
-            onChange={inputChange("nmcmnd")}
-            inputMode="numeric"
-            placeholder="Nhập CCCD người mua"
+        {/*
+          Bộ lọc CCCD người mua tạm thời không dùng trên frontend.
+          Backend vẫn giữ nmcmnd để tương thích với API cũ.
+
+          <FilterRow id="buyer-id" label="CCCD người mua">
+            <input
+              id="buyer-id"
+              className="eif-input"
+              value={form.nmcmnd}
+              onChange={inputChange("nmcmnd")}
+              inputMode="numeric"
+              placeholder="Nhập CCCD người mua"
+            />
+          </FilterRow>
+        */}
+      </section>
+
+      <section className="grid content-start gap-3 border-t border-[var(--border)] py-5 xl:border-l xl:border-t-0 xl:px-7 xl:py-0">
+        <SectionTitle hint="DD/MM/YYYY">Ngày lập hóa đơn</SectionTitle>
+
+        <div className="grid gap-1.5">
+          <label htmlFor="invoice-from-date" className="text-[11px] font-semibold text-[var(--muted)]">
+            Từ ngày
+          </label>
+          <DateInput
+            id="invoice-from-date"
+            label="Từ ngày"
+            value={form.from_date}
+            onChange={(value) => onChange("from_date", value)}
           />
-        </FilterRow>
+        </div>
+
+        <div className="grid gap-1.5">
+          <label htmlFor="invoice-to-date" className="text-[11px] font-semibold text-[var(--muted)]">
+            Đến ngày
+          </label>
+          <DateInput
+            id="invoice-to-date"
+            label="Đến ngày"
+            value={form.to_date}
+            onChange={(value) => onChange("to_date", value)}
+          />
+        </div>
+
+        <p className="text-[11px] leading-5 text-[var(--muted)]">
+          Nhập DD/MM/YYYY hoặc bấm biểu tượng lịch để chọn ngày. EIF sẽ tự chuyển sang định dạng API khi tra cứu.
+        </p>
+      </section>
+
+      <section className="grid content-start gap-3 border-t border-[var(--border)] pt-5 xl:border-l xl:border-t-0 xl:pl-7 xl:pt-0">
+        <SectionTitle>Trạng thái</SectionTitle>
 
         <FilterRow id="delegated-invoice" label="Hóa đơn ủy nhiệm">
           <select
@@ -203,27 +286,23 @@ export function InvoiceFilterForm({
           </select>
         </FilterRow>
 
-        <FilterRow id="result-size" label="Số bản ghi">
-          <input
-            id="result-size"
-            className="eif-input"
-            type="number"
-            min="1"
-            max="5000"
-            value={form.size}
-            onChange={inputChange("size")}
-          />
-        </FilterRow>
-      </div>
+        {/*
+          Số bản ghi đã được cố định là 50 ở payload và wrapper backend.
+          Field nhập tay cũ được giữ lại dưới dạng comment theo yêu cầu.
 
-      <div className="flex flex-wrap items-center gap-2 border-t border-[var(--border)] pt-4">
-        <Button type="submit" busy={loading}>
-          Tra cứu {mode.shortLabel}
-        </Button>
-        <Button type="button" variant="secondary" onClick={onReset}>
-          Đặt lại
-        </Button>
-      </div>
+          <FilterRow id="result-size" label="Số bản ghi">
+            <input
+              id="result-size"
+              className="eif-input"
+              type="number"
+              min="1"
+              max="5000"
+              value={form.size}
+              onChange={inputChange("size")}
+            />
+          </FilterRow>
+        */}
+      </section>
     </form>
   );
 }

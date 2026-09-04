@@ -7,12 +7,26 @@ export const HDDT_ENDPOINTS = {
   authenticate: `${BASE}/authenticate`,
   session: `${BASE}/session`,
   sessionRefresh: `${BASE}/session/refresh`,
-  export: `${BASE}/invoice/export`,
-  exportMerged: `${BASE}/invoice/export/merged`,
-  query: {
-    "standard-sold": `${BASE}/invoice/sold`,
-    "standard-purchase": `${BASE}/invoice/purchase`,
-    "sco-sold": `${BASE}/invoice/sco/sold`,
-    "sco-purchase": `${BASE}/invoice/sco/purchase`,
+
+  wrapperQuery: {
+    sold: `${BASE}/invoice/wrapper/sold`,
+    purchase: `${BASE}/invoice/wrapper/purchase`,
   } satisfies Record<InvoiceModeId, string>,
+
+  wrapperExport: {
+    sold: `${BASE}/invoice/wrapper/sold/export`,
+    purchase: `${BASE}/invoice/wrapper/purchase/export`,
+  } satisfies Record<InvoiceModeId, string>,
+
+  // Các endpoint cũ vẫn được backend giữ để tương thích, nhưng UI không gọi trực tiếp nữa.
+  legacy: {
+    export: `${BASE}/invoice/export`,
+    exportMerged: `${BASE}/invoice/export/merged`,
+    query: {
+      standardSold: `${BASE}/invoice/sold`,
+      standardPurchase: `${BASE}/invoice/purchase`,
+      scoSold: `${BASE}/invoice/sco/sold`,
+      scoPurchase: `${BASE}/invoice/sco/purchase`,
+    },
+  },
 } as const;

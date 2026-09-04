@@ -11,7 +11,7 @@ export function InvoiceTable({ datas }: { datas: InvoiceRecord[] }) {
   if (datas.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-[var(--border)] px-5 py-12 text-center text-sm text-[var(--muted)]">
-        Chưa có dữ liệu.
+        Không có dữ liệu để hiển thị.
       </div>
     );
   }

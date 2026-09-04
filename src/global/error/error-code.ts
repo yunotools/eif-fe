@@ -30,6 +30,7 @@ const BACKEND_MESSAGES: Record<string, string> = {
   "EIF-HDDT-GDT-REFRESH-401": "Không thể làm mới phiên. Kiểm tra mật khẩu và captcha.",
   "EIF-HDDT-GDT-504": "Hệ thống Thuế phản hồi quá chậm. Vui lòng thử lại.",
   "EIF-HDDT-GDT-502": "Không thể kết nối tới hệ thống Thuế.",
+  "EIF-HDDT-GDT-RATE-LIMIT-429": "Hệ thống Thuế đang giới hạn số lần truy cập. EIF đã tự thử lại; vui lòng chờ một chút rồi thử lại.",
   "EIF-HDDT-GDT-INVALID-502": "Hệ thống Thuế trả về dữ liệu không hợp lệ.",
   "EIF-HDDT-GDT-EXPORT-400": "Khoảng ngày xuất dữ liệu quá lớn.",
 };
@@ -43,6 +44,7 @@ export function userMessageForBackendError(
   if (status === 400) return "Thông tin gửi lên chưa hợp lệ.";
   if (status === 401) return "Phiên đăng nhập đã hết hạn.";
   if (status === 403) return "Bạn không có quyền thực hiện thao tác này.";
+  if (status === 429) return "Hệ thống Thuế đang giới hạn số lần truy cập. Vui lòng chờ một chút rồi thử lại.";
   if (status >= 500) return "Hệ thống đang bận. Vui lòng thử lại.";
   return fallback?.trim() || "Yêu cầu không thành công.";
 }

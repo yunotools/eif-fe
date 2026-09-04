@@ -1,11 +1,6 @@
 export type InvoiceDirection = "sold" | "purchase";
-export type InvoiceChannel = "standard" | "sco";
 
-export type InvoiceModeId =
-  | "standard-sold"
-  | "standard-purchase"
-  | "sco-sold"
-  | "sco-purchase";
+export type InvoiceModeId = InvoiceDirection;
 
 export type InvoiceMode = {
   id: InvoiceModeId;
@@ -13,6 +8,4 @@ export type InvoiceMode = {
   shortLabel: string;
   description: string;
   direction: InvoiceDirection;
-  channel: InvoiceChannel;
-  sco: boolean;
 };
